@@ -12,7 +12,7 @@ solana_presale_token = "AEoUYX3Jdp5fMb4vG9wWxhLYTZESdZU7PJaC6BrkRtM9"
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
