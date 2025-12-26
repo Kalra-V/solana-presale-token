@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program;
+use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface};
 
 mod utils;
 
@@ -9,6 +10,8 @@ declare_id!("AEoUYX3Jdp5fMb4vG9wWxhLYTZESdZU7PJaC6BrkRtM9");
 
 #[program]
 pub mod solana_presale_token {
+
+
     use super::*;
 
     pub fn initialize_user(ctx: Context<InitializeUser>) -> Result<()> {
@@ -19,13 +22,16 @@ pub mod solana_presale_token {
 
         msg!(
             "User State initialized with sol_transferred as 0 at: {:?}",
-            ctx.accounts.user_state.key().as_ref()
+            ctx.accounts.user_state.key()
         );
         Ok(())
     }
 
-    pub fn initialize_central_pda(_ctx: Context<InitializeCentralPDA>) -> Result<()> {
+    pub fn initialize_central_pda(ctx: Context<InitializeCentralPDA>) -> Result<()> {
         msg!("Central PDA initialized!");
+
+        ctx.accounts.central_pda.is_distributable = false;
+
         Ok(())
     }
 
@@ -63,6 +69,33 @@ pub mod solana_presale_token {
 
         Ok(())
     }
+
+    pub fn enable_distribution(ctx: Context<EnableDistribution>) -> Result<()> {
+        msg!("Enabling distribution for the central PDA...");
+
+        let central_pda = &mut ctx.accounts.central_pda;
+        central_pda.is_distributable = true;
+
+        msg!("Distribution has been enabled.");
+        Ok(())
+    }
+
+    // create another ix for distribution
+}
+
+#[derive(Accounts)]
+pub struct EnableDistribution<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+
+    #[account(
+        mut, 
+        seeds = [b"presale-central-latest-v1"], 
+        bump
+    )]
+    pub central_pda: Account<'info, CentralPDA>,
+
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -70,14 +103,30 @@ pub struct InitializeUser<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
+    #[account(mut)]
+    pub mint: InterfaceAccount<'info, Mint>,
+
     #[account(
         init,
         payer = signer,
         space = 8 + UserState::INIT_SPACE,
-        seeds = [b"presale-user", signer.key().as_ref()],
+        seeds = [b"presale-user-acc", signer.key().as_ref()],
         bump
     )]
     pub user_state: Account<'info, UserState>,
+
+    #[account(
+        init,
+        payer = signer,
+        token::mint = mint,
+        token::authority = user_token_account,
+        token::token_program = token_program,
+        seeds = [b"token"], // remove these
+        bump
+    )]
+    pub user_token_account: InterfaceAccount<'info, TokenAccount>, // no seeds
+
+    pub token_program: Interface<'info, TokenInterface>,
 
     pub system_program: Program<'info, System>,
 }
@@ -93,27 +142,44 @@ pub struct InitializeCentralPDA<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
+    // #[account(mut)]
+    // pub mint: InterfaceAccount<'info, Mint>,
     #[account(
         init,
         payer = signer,
-        space = 8,
-        seeds = [b"presale-central"],
+        space = 8 + CentralPDA::INIT_SPACE,
+        seeds = [b"presale-central-latest-v1"],
         bump
     )]
     pub central_pda: Account<'info, CentralPDA>,
 
+    // #[account(
+    //     init,
+    //     payer = signer,
+    //     token::mint = mint,
+    //     token::authority = pda_token_account,
+    //     token::token_program = token_program,
+    //     seeds = [b"token"], // no seed of user ATA
+    //     bump
+    // )]
+    // pub pda_token_account: InterfaceAccount<'info, TokenAccount>,
+
+    // pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
 }
 
 #[account]
-pub struct CentralPDA {}
+#[derive(InitSpace)]
+pub struct CentralPDA {
+    pub is_distributable: bool,
+}
 
 #[derive(Accounts)]
 pub struct Deposit<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
-
-    #[account(mut, seeds = [b"presale-central"], bump)]
+    
+    #[account(mut, seeds = [b"presale-central-latest"], bump)]
     pub central_pda: Account<'info, CentralPDA>,
 
     #[account(mut, seeds = [b"presale-user", signer.key().as_ref()], bump)]

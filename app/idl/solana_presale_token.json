@@ -47,7 +47,14 @@
                   116,
                   114,
                   97,
-                  108
+                  108,
+                  45,
+                  108,
+                  97,
+                  116,
+                  101,
+                  115,
+                  116
                 ]
               }
             ]
@@ -95,6 +102,69 @@
       ]
     },
     {
+      "name": "enable_distribution",
+      "discriminator": [
+        137,
+        135,
+        101,
+        193,
+        180,
+        29,
+        138,
+        174
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "central_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  101,
+                  115,
+                  97,
+                  108,
+                  101,
+                  45,
+                  99,
+                  101,
+                  110,
+                  116,
+                  114,
+                  97,
+                  108,
+                  45,
+                  108,
+                  97,
+                  116,
+                  101,
+                  115,
+                  116,
+                  45,
+                  118,
+                  49
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "initialize_central_pda",
       "discriminator": [
         181,
@@ -134,7 +204,17 @@
                   116,
                   114,
                   97,
-                  108
+                  108,
+                  45,
+                  108,
+                  97,
+                  116,
+                  101,
+                  115,
+                  116,
+                  45,
+                  118,
+                  49
                 ]
               }
             ]
@@ -166,6 +246,10 @@
           "signer": true
         },
         {
+          "name": "mint",
+          "writable": true
+        },
+        {
           "name": "user_state",
           "writable": true,
           "pda": {
@@ -184,7 +268,11 @@
                   117,
                   115,
                   101,
-                  114
+                  114,
+                  45,
+                  97,
+                  99,
+                  99
                 ]
               },
               {
@@ -193,6 +281,27 @@
               }
             ]
           }
+        },
+        {
+          "name": "user_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  111,
+                  107,
+                  101,
+                  110
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
         },
         {
           "name": "system_program",
@@ -235,7 +344,12 @@
       "name": "CentralPDA",
       "type": {
         "kind": "struct",
-        "fields": []
+        "fields": [
+          {
+            "name": "is_distributable",
+            "type": "bool"
+          }
+        ]
       }
     },
     {
