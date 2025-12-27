@@ -1,5 +1,5 @@
 {
-  "address": "AEoUYX3Jdp5fMb4vG9wWxhLYTZESdZU7PJaC6BrkRtM9",
+  "address": "HnQPtPdUZnYQpqX14QiP1CFY9x49hUyDCaaXUjRLH1JJ",
   "metadata": {
     "name": "solana_presale_token",
     "version": "0.1.0",
@@ -54,7 +54,10 @@
                   116,
                   101,
                   115,
-                  116
+                  116,
+                  45,
+                  118,
+                  50
                 ]
               }
             ]
@@ -79,7 +82,17 @@
                   117,
                   115,
                   101,
-                  114
+                  114,
+                  45,
+                  108,
+                  97,
+                  116,
+                  101,
+                  115,
+                  116,
+                  45,
+                  118,
+                  50
                 ]
               },
               {
@@ -100,6 +113,123 @@
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "distribute",
+      "discriminator": [
+        191,
+        44,
+        223,
+        207,
+        164,
+        236,
+        126,
+        61
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "central_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  101,
+                  115,
+                  97,
+                  108,
+                  101,
+                  45,
+                  99,
+                  101,
+                  110,
+                  116,
+                  114,
+                  97,
+                  108,
+                  45,
+                  108,
+                  97,
+                  116,
+                  101,
+                  115,
+                  116,
+                  45,
+                  118,
+                  50
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pda_token_account",
+          "writable": true
+        },
+        {
+          "name": "user_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  101,
+                  115,
+                  97,
+                  108,
+                  101,
+                  45,
+                  117,
+                  115,
+                  101,
+                  114,
+                  45,
+                  108,
+                  97,
+                  116,
+                  101,
+                  115,
+                  116,
+                  45,
+                  118,
+                  50
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "signer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
     },
     {
       "name": "enable_distribution",
@@ -151,7 +281,7 @@
                   116,
                   45,
                   118,
-                  49
+                  50
                 ]
               }
             ]
@@ -181,6 +311,10 @@
           "name": "signer",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "mint",
+          "writable": true
         },
         {
           "name": "central_pda",
@@ -214,11 +348,75 @@
                   116,
                   45,
                   118,
-                  49
+                  50
                 ]
               }
             ]
           }
+        },
+        {
+          "name": "pda_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "central_pda"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "system_program",
@@ -270,9 +468,15 @@
                   101,
                   114,
                   45,
+                  108,
                   97,
-                  99,
-                  99
+                  116,
+                  101,
+                  115,
+                  116,
+                  45,
+                  118,
+                  50
                 ]
               },
               {
@@ -288,20 +492,63 @@
           "pda": {
             "seeds": [
               {
-                "kind": "const",
-                "value": [
-                  116,
-                  111,
-                  107,
-                  101,
-                  110
-                ]
+                "kind": "account",
+                "path": "signer"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
               }
-            ]
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
           }
         },
         {
           "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         },
         {
           "name": "system_program",
@@ -339,6 +586,23 @@
       ]
     }
   ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "DistributionNotEnabled",
+      "msg": "Token distribution is not enabled yet"
+    },
+    {
+      "code": 6001,
+      "name": "AlreadyDistributed",
+      "msg": "Tokens have already been distributed to this user"
+    },
+    {
+      "code": 6002,
+      "name": "MathOverflow",
+      "msg": "Some error with the token amount"
+    }
+  ],
   "types": [
     {
       "name": "CentralPDA",
@@ -358,8 +622,16 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "user_pubkey",
+            "type": "pubkey"
+          },
+          {
             "name": "sol_transferred",
-            "type": "f64"
+            "type": "u64"
+          },
+          {
+            "name": "is_distributed",
+            "type": "bool"
           }
         ]
       }
