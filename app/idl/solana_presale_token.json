@@ -586,6 +586,73 @@
       ]
     }
   ],
+  "events": [
+    {
+      "name": "DepositEvent",
+      "discriminator": [
+        120,
+        248,
+        61,
+        83,
+        31,
+        142,
+        107,
+        144
+      ]
+    },
+    {
+      "name": "DistributeEvent",
+      "discriminator": [
+        110,
+        134,
+        163,
+        31,
+        1,
+        16,
+        107,
+        76
+      ]
+    },
+    {
+      "name": "EnableDistributionEvent",
+      "discriminator": [
+        68,
+        151,
+        186,
+        135,
+        86,
+        63,
+        106,
+        193
+      ]
+    },
+    {
+      "name": "InitializeCentralPDAEvent",
+      "discriminator": [
+        226,
+        214,
+        177,
+        34,
+        188,
+        78,
+        132,
+        231
+      ]
+    },
+    {
+      "name": "InitializeUserEvent",
+      "discriminator": [
+        128,
+        4,
+        202,
+        37,
+        255,
+        1,
+        206,
+        197
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 6000,
@@ -594,11 +661,16 @@
     },
     {
       "code": 6001,
+      "name": "TokensDistributed",
+      "msg": "Tokens have already been distributed"
+    },
+    {
+      "code": 6002,
       "name": "AlreadyDistributed",
       "msg": "Tokens have already been distributed to this user"
     },
     {
-      "code": 6002,
+      "code": 6003,
       "name": "MathOverflow",
       "msg": "Some error with the token amount"
     }
@@ -612,6 +684,106 @@
           {
             "name": "is_distributable",
             "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "central_pda",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DistributeEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "signer",
+            "type": "pubkey"
+          },
+          {
+            "name": "user_state",
+            "type": "pubkey"
+          },
+          {
+            "name": "user_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_amount",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EnableDistributionEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "signer",
+            "type": "pubkey"
+          },
+          {
+            "name": "central_pda",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeCentralPDAEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "central_pda",
+            "type": "pubkey"
+          },
+          {
+            "name": "signer",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeUserEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "user_state_pda",
+            "type": "pubkey"
           }
         ]
       }

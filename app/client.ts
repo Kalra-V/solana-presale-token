@@ -180,79 +180,79 @@ export const program: Program<SolanaPresaleToken> = new Program(
 //     console.error("Error initializing User State: ", error);
 //   });
 
-// export const deposit = async () => {
-//   let blockhash = await connection.getLatestBlockhash();
+export const deposit = async () => {
+  let blockhash = await connection.getLatestBlockhash();
 
-//   const [centralPda] = PublicKey.findProgramAddressSync(
-//     [Buffer.from("presale-central-latest")],
-//     PROGRAM_ID
-//   );
+  const [centralPda] = PublicKey.findProgramAddressSync(
+    [Buffer.from("presale-central-latest")],
+    PROGRAM_ID
+  );
 
-//   console.log("CENTRAL PDA: ", centralPda);
+  console.log("CENTRAL PDA: ", centralPda);
 
-//   const [userState] = PublicKey.findProgramAddressSync(
-//     [Buffer.from("presale-user-acc"), wallet.publicKey.toBuffer()],
-//     PROGRAM_ID
-//   );
+  const [userState] = PublicKey.findProgramAddressSync(
+    [Buffer.from("presale-user-acc"), wallet.publicKey.toBuffer()],
+    PROGRAM_ID
+  );
 
-//   // const pdaTokenAccount = getAssociatedTokenAddressSync(
-//   //   MINT_ADDRESS,
-//   //   centralPda,
-//   //   true,
-//   //   TOKEN_2022_PROGRAM_ID,
-//   //   ASSOCIATED_TOKEN_PROGRAM_ID
-//   // )
+  // const pdaTokenAccount = getAssociatedTokenAddressSync(
+  //   MINT_ADDRESS,
+  //   centralPda,
+  //   true,
+  //   TOKEN_2022_PROGRAM_ID,
+  //   ASSOCIATED_TOKEN_PROGRAM_ID
+  // )
 
-//   // const userTokenAccount = getAssociatedTokenAddressSync(
-//   //   MINT_ADDRESS,
-//   //   wallet.publicKey,
-//   //   true,
-//   //   TOKEN_2022_PROGRAM_ID,
-//   //   ASSOCIATED_TOKEN_PROGRAM_ID
-//   // )
+  // const userTokenAccount = getAssociatedTokenAddressSync(
+  //   MINT_ADDRESS,
+  //   wallet.publicKey,
+  //   true,
+  //   TOKEN_2022_PROGRAM_ID,
+  //   ASSOCIATED_TOKEN_PROGRAM_ID
+  // )
 
-//   const instructions = [
-//     await program.methods
-//       .deposit(new BN(1 * LAMPORTS_PER_SOL))
-//       .accounts({
-//         signer: wallet.publicKey,
-//         // mint: MINT_ADDRESS,
-//         // central_pda: centralPda,
-//         // pdaTokenAccount: pdaTokenAccount,
-//         // user_state: userState,
-//         // userTokenAccount: userTokenAccount,
-//         // tokenProgram: TOKEN_2022_PROGRAM_ID,
-//         // system_program: SystemProgram.programId,
-//       })
-//       .instruction(),
-//   ];
+  const instructions = [
+    await program.methods
+      .deposit(new BN(1 * LAMPORTS_PER_SOL))
+      .accounts({
+        signer: wallet.publicKey,
+        // mint: MINT_ADDRESS,
+        // central_pda: centralPda,
+        // pdaTokenAccount: pdaTokenAccount,
+        // user_state: userState,
+        // userTokenAccount: userTokenAccount,
+        // tokenProgram: TOKEN_2022_PROGRAM_ID,
+        // system_program: SystemProgram.programId,
+      })
+      .instruction(),
+  ];
 
-//   const messageV0 = new web3.TransactionMessage({
-//     payerKey: wallet.publicKey,
-//     recentBlockhash: blockhash.blockhash,
-//     instructions: instructions,
-//   }).compileToV0Message();
+  const messageV0 = new web3.TransactionMessage({
+    payerKey: wallet.publicKey,
+    recentBlockhash: blockhash.blockhash,
+    instructions: instructions,
+  }).compileToV0Message();
 
-//   const transaction = new web3.VersionedTransaction(messageV0);
+  const transaction = new web3.VersionedTransaction(messageV0);
 
-//   transaction.sign([wallet]);
+  transaction.sign([wallet]);
 
-//   const txSignature = await connection.sendTransaction(transaction, { skipPreflight: true });
+  const txSignature = await connection.sendTransaction(transaction, { skipPreflight: true });
 
-//   console.log("Transaction hash", txSignature);
-//   console.log(`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`);
-// };
+  console.log("Transaction hash", txSignature);
+  console.log(`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`);
+};
 
-// deposit()
-//   .then(async () => {
-//     console.log("Deposited 1 SOL To Central PDA & Updated User State!");
-//   })
-//   .catch((error) => {
-//     console.error(
-//       "Error depositing 1 SOL To Central PDA & updating User State ",
-//       error
-//     );
-//   });
+deposit()
+  .then(async () => {
+    console.log("Deposited 1 SOL To Central PDA & Updated User State!");
+  })
+  .catch((error) => {
+    console.error(
+      "Error depositing 1 SOL To Central PDA & updating User State ",
+      error
+    );
+  });
 
 // export const enableDistribution = async () => {
 //   let blockhash = await connection.getLatestBlockhash();
@@ -305,80 +305,80 @@ export const program: Program<SolanaPresaleToken> = new Program(
 
 // job.start();
 
-export const distribute = async () => {
-  let blockhash = await connection.getLatestBlockhash();
+// export const distribute = async () => {
+//   let blockhash = await connection.getLatestBlockhash();
 
-  const [centralPda] = PublicKey.findProgramAddressSync(
-    [Buffer.from("presale-central-latest-v2")],
-    PROGRAM_ID
-  );
+//   const [centralPda] = PublicKey.findProgramAddressSync(
+//     [Buffer.from("presale-central-latest-v2")],
+//     PROGRAM_ID
+//   );
 
-  const [userState] = PublicKey.findProgramAddressSync(
-    [Buffer.from("presale-user-latest-v2"), wallet.publicKey.toBuffer()],
-    PROGRAM_ID
-  );
+//   const [userState] = PublicKey.findProgramAddressSync(
+//     [Buffer.from("presale-user-latest-v2"), wallet.publicKey.toBuffer()],
+//     PROGRAM_ID
+//   );
 
-  const pdaTokenAccount = getAssociatedTokenAddressSync(
-    MINT_ADDRESS,
-    centralPda,
-    true,
-    TOKEN_2022_PROGRAM_ID,
-    ASSOCIATED_TOKEN_PROGRAM_ID
-  );
+//   const pdaTokenAccount = getAssociatedTokenAddressSync(
+//     MINT_ADDRESS,
+//     centralPda,
+//     true,
+//     TOKEN_2022_PROGRAM_ID,
+//     ASSOCIATED_TOKEN_PROGRAM_ID
+//   );
 
-  console.log("PDA TOKEN ACC: ", pdaTokenAccount);
+//   console.log("PDA TOKEN ACC: ", pdaTokenAccount);
 
-  const users = await program.account.userState.all();
+//   const users = await program.account.userState.all();
 
-  let instructions: web3.TransactionInstruction[] = [];
+//   let instructions: web3.TransactionInstruction[] = [];
 
-  for (const user of users) {
-    console.log("User: ", user.account);
+//   for (const user of users) {
+//     console.log("User: ", user.account);
 
-    const userTokenAccount = getAssociatedTokenAddressSync(
-      MINT_ADDRESS,
-      user.account.userPubkey,
-      true,
-      TOKEN_2022_PROGRAM_ID,
-      ASSOCIATED_TOKEN_PROGRAM_ID
-    );
+//     const userTokenAccount = getAssociatedTokenAddressSync(
+//       MINT_ADDRESS,
+//       user.account.userPubkey,
+//       true,
+//       TOKEN_2022_PROGRAM_ID,
+//       ASSOCIATED_TOKEN_PROGRAM_ID
+//     );
 
-    const ix = await program.methods
-      .distribute()
-      .accounts({
-        signer: wallet.publicKey,
-        mint: MINT_ADDRESS,
-        pdaTokenAccount: pdaTokenAccount,
-        userTokenAccount: userTokenAccount,
-        tokenProgram: TOKEN_2022_PROGRAM_ID,
-      })
-      .instruction();
+//     const ix = await program.methods
+//       .distribute()
+//       .accounts({
+//         signer: wallet.publicKey,
+//         mint: MINT_ADDRESS,
+//         pdaTokenAccount: pdaTokenAccount,
+//         userTokenAccount: userTokenAccount,
+//         tokenProgram: TOKEN_2022_PROGRAM_ID,
+//       })
+//       .instruction();
 
-    instructions.push(ix);
-  }
+//     instructions.push(ix);
+//   }
 
-  const messageV0 = new web3.TransactionMessage({
-    payerKey: wallet.publicKey,
-    recentBlockhash: blockhash.blockhash,
-    instructions: instructions,
-  }).compileToV0Message();
+//   const messageV0 = new web3.TransactionMessage({
+//     payerKey: wallet.publicKey,
+//     recentBlockhash: blockhash.blockhash,
+//     instructions: instructions,
+//   }).compileToV0Message();
 
-  const transaction = new web3.VersionedTransaction(messageV0);
+//   const transaction = new web3.VersionedTransaction(messageV0);
 
-  transaction.sign([wallet]);
+//   transaction.sign([wallet]);
 
-  const txSignature = await connection.sendTransaction(transaction, {
-    skipPreflight: true,
-  });
+//   const txSignature = await connection.sendTransaction(transaction, {
+//     skipPreflight: true,
+//   });
 
-  console.log("Transaction hash", txSignature);
-  console.log(`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`);
-};
+//   console.log("Transaction hash", txSignature);
+//   console.log(`https://explorer.solana.com/tx/${txSignature}?cluster=devnet`);
+// };
 
-distribute()
-  .then(async () => {
-    console.log("Distributed Tokens Users!");
-  })
-  .catch((error) => {
-    console.error("Error distributing tokens to users: ", error);
-  });
+// distribute()
+//   .then(async () => {
+//     console.log("Distributed Tokens to Users!");
+//   })
+//   .catch((error) => {
+//     console.error("Error distributing tokens to users: ", error);
+//   });

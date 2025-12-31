@@ -27,6 +27,12 @@ pub mod solana_presale_token {
             "User State initialized with sol_transferred as 0 at: {:?}",
             ctx.accounts.user_state.key()
         );
+
+        emit!(InitializeUserEvent {
+            user_pubkey: *ctx.accounts.signer.key,
+            user_state_pda: ctx.accounts.user_state.key()
+        });
+
         Ok(())
     }
 
@@ -35,6 +41,12 @@ pub mod solana_presale_token {
 
         ctx.accounts.central_pda.is_distributable = false;
 
+        emit!(InitializeCentralPDAEvent {
+            central_pda: ctx.accounts.central_pda.key(),
+            signer: ctx.accounts.signer.key(),
+            mint: ctx.accounts.mint.key()
+        });
+
         Ok(())
     }
 
@@ -42,6 +54,8 @@ pub mod solana_presale_token {
         let signer = &ctx.accounts.signer;
         let central_pda = &ctx.accounts.central_pda;
         let user_state = &mut ctx.accounts.user_state;
+
+        // require!(!central_pda.is_distributable, PresaleError::TokensDistributed);
 
         let amount_in_sol = lamports_to_sol(amount);
 
@@ -71,6 +85,12 @@ pub mod solana_presale_token {
             user_state.sol_transferred
         );
 
+        emit!(DepositEvent {
+            user_pubkey: signer.to_account_info().key(),
+            amount: amount,
+            central_pda: central_pda.key()
+        });
+
         Ok(())
     }
 
@@ -83,6 +103,12 @@ pub mod solana_presale_token {
         central_pda.is_distributable = true;
 
         msg!("Distribution has been enabled.");
+
+        emit!(EnableDistributionEvent {
+           central_pda: central_pda.key(),
+           signer: ctx.accounts.signer.key() 
+        });
+
         Ok(())
     }
 
@@ -133,6 +159,14 @@ pub mod solana_presale_token {
         user_state.is_distributed = true;
 
         msg!("Transferred {} tokens to user", token_amount);
+
+        emit!(DistributeEvent {
+            mint: mint.key(),
+            signer: ctx.accounts.signer.key(),
+            user_state: user_state.key(),
+            user_pubkey: user_state.user_pubkey,
+            token_amount: token_amount
+        });
 
         Ok(())
     }
@@ -274,9 +308,48 @@ pub enum PresaleError {
     #[msg("Token distribution is not enabled yet")]
     DistributionNotEnabled,
 
+    #[msg("Tokens have already been distributed")]
+    TokensDistributed,
+
     #[msg("Tokens have already been distributed to this user")]
     AlreadyDistributed,
 
     #[msg("Some error with the token amount")]
     MathOverflow
 }
+
+#[event]
+pub struct InitializeUserEvent {
+    pub user_pubkey: Pubkey,
+    pub user_state_pda: Pubkey
+}
+
+#[event]
+pub struct InitializeCentralPDAEvent {
+    pub central_pda: Pubkey,
+    pub signer: Pubkey,
+    pub mint: Pubkey
+}
+
+#[event]
+pub struct EnableDistributionEvent {
+    pub signer: Pubkey,
+    pub central_pda: Pubkey
+}
+
+#[event]
+pub struct DistributeEvent {
+    pub signer: Pubkey,
+    pub user_state: Pubkey,
+    pub user_pubkey: Pubkey,
+    pub token_amount: u64,
+    pub mint: Pubkey
+}
+
+#[event]
+pub struct DepositEvent {
+    pub user_pubkey: Pubkey,
+    pub amount: u64,
+    pub central_pda: Pubkey
+}
+
