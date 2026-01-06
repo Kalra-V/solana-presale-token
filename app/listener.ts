@@ -6,7 +6,23 @@ import fs from "fs";
 import { SolanaPresaleToken } from "../target/types/solana_presale_token";
 import dotenv from "dotenv";
 import { writeEvent } from "./eventStore";
+import { emitEvent, setSocketIOInstance } from "./socket-emitter";
+import { createServer } from "http";
+import { Server } from "socket.io";
 dotenv.config();
+
+const httpServer = createServer();
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+
+const SOCKET_PORT = process.env.SOCKET_PORT || 3001;
+httpServer.listen(SOCKET_PORT, () => {
+  console.log(`Socket.IO server listening on port ${SOCKET_PORT}`);
+});
 
 const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
@@ -25,6 +41,7 @@ try {
   console.log("Wallet loaded successfully");
 } catch (error) {
   console.error("Error loading wallet", error);
+  process.exit(1);
 }
 
 const walletWrapper = new anchor.Wallet(wallet);
@@ -40,21 +57,87 @@ export const program: Program<SolanaPresaleToken> = new Program(
   provider
 );
 
-program.addEventListener("depositEvent", async (event, slot, signature) => {
-  console.log("Got event DEPOSIT:", event, "slot:", slot, "sig:", signature);
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
 
-  await writeEvent(
-    {
-      eventType: "DEPOSIT",
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+
+setSocketIOInstance(io);
+
+async function handleEvent(
+  eventName: string,
+  eventType: string,
+  event: any,
+  slot: number,
+  signature: string,
+  dataMapper: (event: any) => any
+) {
+  try {
+    const eventData = dataMapper(event);
+
+    // Try to write to DB
+    const result = await writeEvent(
+      {
+        eventType,
+        txSignature: signature,
+        slot,
+        timestamp: new Date().toISOString(),
+      },
+      eventData
+    );
+
+    // Handle duplicate events
+    if (result.isDuplicate) {
+      console.log(`Duplicate ${eventType} event detected (tx: ${signature.slice(0, 8)}...), skipping`);
+      return;
+    }
+
+    // Only emit to frontend if DB write was successful
+    emitEvent(eventName, {
+      ...eventData,
+      eventType,
       txSignature: signature,
       slot,
       timestamp: new Date().toISOString(),
-    },
-    {
-      user_pubkey: event.userPubkey.toString(),
-      lamports: Number(event.amount),
-      central_pda: event.centralPda.toString(),
-    }
+    });
+
+    console.log(`${eventType} event processed successfully (tx: ${signature.slice(0, 8)}...)`);
+  } catch (error: any) {
+    // Log the error but don't crash the listener
+    console.error(`Error processing ${eventType} event:`, {
+      error: error.message,
+      txSignature: signature,
+      slot,
+    });
+
+    // Optional: Emit error event for monitoring/alerting
+    emitEvent("event_processing_error", {
+      eventType,
+      txSignature: signature,
+      slot,
+      error: error.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+}
+
+program.addEventListener("depositEvent", async (event, slot, signature) => {
+  console.log("Got event DEPOSIT:", event, "slot:", slot, "sig:", signature);
+
+  await handleEvent(
+    "deposit",
+    "DEPOSIT",
+    event,
+    slot,
+    signature,
+    (e) => ({
+      user_pubkey: e.userPubkey.toString(),
+      lamports: Number(e.amount),
+      central_pda: e.centralPda.toString(),
+    })
   );
 });
 
@@ -70,17 +153,16 @@ program.addEventListener(
       signature
     );
 
-    await writeEvent(
-      {
-        eventType: "INITIALIZE_USER",
-        txSignature: signature,
-        slot,
-        timestamp: new Date().toISOString(),
-      },
-      {
-        user_pubkey: event.userPubkey.toString(),
-        user_state_pda: event.userStatePda.toString(),
-      }
+    await handleEvent(
+      "initialize_user",
+      "INITIALIZE_USER",
+      event,
+      slot,
+      signature,
+      (e) => ({
+        user_pubkey: e.userPubkey.toString(),
+        user_state_pda: e.userStatePda.toString(),
+      })
     );
   }
 );
@@ -97,18 +179,17 @@ program.addEventListener(
       signature
     );
 
-    await writeEvent(
-      {
-        eventType: "INITIALIZE_CENTRAL_PDA",
-        txSignature: signature,
-        slot,
-        timestamp: new Date().toISOString(),
-      },
-      {
-        central_pda: event.centralPda.toString(),
-        signer: event.signer.toString(),
-        mint: event.mint.toString(),
-      }
+    await handleEvent(
+      "initialize_central_pda",
+      "INITIALIZE_CENTRAL_PDA",
+      event,
+      slot,
+      signature,
+      (e) => ({
+        central_pda: e.centralPda.toString(),
+        signer: e.signer.toString(),
+        mint: e.mint.toString(),
+      })
     );
   }
 );
@@ -125,17 +206,16 @@ program.addEventListener(
       signature
     );
 
-    await writeEvent(
-      {
-        eventType: "ENABLE_DISTRIBUTION",
-        txSignature: signature,
-        slot,
-        timestamp: new Date().toISOString(),
-      },
-      {
-        central_pda: event.centralPda.toString(),
-        signer: event.signer.toString(),
-      }
+    await handleEvent(
+      "enable_distribution",
+      "ENABLE_DISTRIBUTION",
+      event,
+      slot,
+      signature,
+      (e) => ({
+        central_pda: e.centralPda.toString(),
+        signer: e.signer.toString(),
+      })
     );
   }
 );
@@ -143,19 +223,22 @@ program.addEventListener(
 program.addEventListener("distributeEvent", async (event, slot, signature) => {
   console.log("Got event DISTRIBUTE:", event, "slot:", slot, "sig:", signature);
 
-  await writeEvent(
-    {
-      eventType: "DISTRIBUTE",
-      txSignature: signature,
-      slot,
-      timestamp: new Date().toISOString(),
-    },
-    {
-      user_pubkey: event.userPubkey.toString(),
-      user_state_pda: event.userState.toString(),
-      token_amount: Number(event.tokenAmount),
-      mint: event.mint.toString(),
-      signer: event.signer.toString(),
-    }
+  await handleEvent(
+    "distribute",
+    "DISTRIBUTE",
+    event,
+    slot,
+    signature,
+    (e) => ({
+      user_pubkey: e.userPubkey.toString(),
+      user_state_pda: e.userState.toString(),
+      token_amount: Number(e.tokenAmount),
+      mint: e.mint.toString(),
+      signer: e.signer.toString(),
+    })
   );
 });
+
+console.log("Listener started successfully");
+console.log("Listening for Solana events on devnet...");
+console.log("WebSocket server ready on port", SOCKET_PORT);
