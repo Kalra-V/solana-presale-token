@@ -119,7 +119,7 @@ export function usePresale() {
       }).compileToV0Message();
 
       const transaction = new VersionedTransaction(messageV0);
-      const signature = await connection.sendTransaction(transaction);
+      const signature = await sendTransaction(transaction, connection);
 
       // await connection.confirmTransaction(signature, "confirmed");
 
