@@ -98,6 +98,14 @@ export async function buildClaimTransaction(
   return instruction;
 }
 
+export async function buildDistributeTransactionForUser(
+  program: Program<SolanaPresaleToken>,
+  userPubkey: PublicKey
+) {
+  // This is the same as buildClaimTransaction, but named for clarity in admin context
+  return buildClaimTransaction(program, userPubkey);
+}
+
 export async function buildEnableDistributionTransaction(
   program: Program<SolanaPresaleToken>,
   adminPubkey: PublicKey

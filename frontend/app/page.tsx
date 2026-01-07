@@ -1,7 +1,8 @@
 "use client";
 
-import { WalletButton } from "../components/WalletButton";
+import { HeroSection } from "../components/HeroSection";
 import { PresaleStatusBanner } from "../components/PresaleStatusBanner";
+import { StatsOverview } from "../components/StatsOverview";
 import { UserStatsCard } from "../components/UserStatsCard";
 import { DepositSection } from "../components/DepositSection";
 import { ClaimSection } from "../components/ClaimSection";
@@ -10,24 +11,26 @@ import { ActivityFeed } from "../components/ActivityFeed";
 
 export default function Home() {
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Token Presale Platform</h1>
-        <WalletButton />
-      </div>
-
+    <div className="space-y-8">
+      <HeroSection />
+      
       <PresaleStatusBanner />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <StatsOverview />
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-6">
         <div className="space-y-6">
-          <UserStatsCard />
           <DepositSection />
           <ClaimSection />
         </div>
         <div className="space-y-6">
+          <UserStatsCard />
           <TransactionHistory />
-          <ActivityFeed />
         </div>
+      </div>
+
+      <div className="px-6 pb-8">
+        <ActivityFeed />
       </div>
     </div>
   );

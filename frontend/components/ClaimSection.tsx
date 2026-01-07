@@ -56,8 +56,12 @@ export function ClaimSection() {
       const result = await claimTokens.mutateAsync();
       setShowConfetti(true);
       showToast(
-        `Tokens claimed successfully! View on Explorer: ${result.explorerUrl}`,
-        "success"
+        "Tokens claimed successfully!",
+        "success",
+        {
+          link: result.explorerUrl,
+          signature: result.signature,
+        }
       );
     } catch (error: any) {
       showToast(`Claim failed: ${error.message}`, "error");
@@ -67,20 +71,20 @@ export function ClaimSection() {
   return (
     <>
       <Confetti trigger={showConfetti} />
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-      <h2 className="text-xl font-bold mb-4">Claim Tokens</h2>
+      <div className="bg-gradient-to-br from-gray-900 to-black border border-orange-500/20 rounded-xl p-6 backdrop-blur-sm animate-slide-up">
+      <h2 className="text-xl font-bold mb-4 text-white">Claim Tokens</h2>
       <div className="space-y-4">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span className="text-gray-400">Claimable Tokens:</span>
-          <span className="font-semibold text-lg">{claimableTokens.toFixed(4)}</span>
+          <span className="font-semibold text-lg text-orange-400">{claimableTokens.toFixed(4)}</span>
         </div>
         <button
           onClick={handleClaim}
           disabled={!canClaim || claimTokens.isPending}
           className={`w-full px-6 py-3 rounded-lg font-semibold transition-all ${
             canClaim
-              ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-              : "bg-gray-700 cursor-not-allowed opacity-50"
+              ? "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30"
+              : "bg-gray-800 border border-gray-700 cursor-not-allowed opacity-50"
           }`}
         >
           {claimTokens.isPending

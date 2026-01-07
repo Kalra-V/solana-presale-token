@@ -23,7 +23,7 @@ export function UserStatsCard() {
 
   if (!publicKey) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
+      <div className="bg-gradient-to-br from-gray-900 to-black border border-orange-500/20 rounded-xl p-6 backdrop-blur-sm">
         <p className="text-gray-400">Connect your wallet to view stats</p>
       </div>
     );
@@ -34,22 +34,28 @@ export function UserStatsCard() {
   const isDistributed = userStats?.isDistributed || userState?.isDistributed || false;
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-      <h2 className="text-xl font-bold mb-4">Your Stats</h2>
+    <div className="bg-gradient-to-br from-gray-900 to-black border border-orange-500/20 rounded-xl p-6 backdrop-blur-sm animate-slide-up">
+      <div className="flex items-center gap-2 mb-4">
+        <h2 className="text-xl font-bold text-white">Your Stats</h2>
+        <div className="flex items-center gap-1">
+          <div className="w-1.5 h-1.5 bg-orange-500 rounded-full animate-pulse-glow"></div>
+          <span className="text-xs text-orange-400">Live</span>
+        </div>
+      </div>
       <div className="space-y-3">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span className="text-gray-400">Total SOL Deposited:</span>
-          <span className="font-semibold">{solDeposited.toFixed(4)} SOL</span>
+          <span className="font-semibold text-orange-400 animate-fade-in">{solDeposited.toFixed(4)} SOL</span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span className="text-gray-400">Estimated Tokens:</span>
-          <span className="font-semibold">{estimatedTokens.toFixed(4)}</span>
+          <span className="font-semibold text-orange-400 animate-fade-in">{estimatedTokens.toFixed(4)}</span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span className="text-gray-400">Distribution Status:</span>
           <span
             className={`font-semibold ${
-              isDistributed ? "text-green-400" : "text-yellow-400"
+              isDistributed ? "text-green-400" : "text-orange-400"
             }`}
           >
             {isDistributed ? "Claimed" : "Pending"}

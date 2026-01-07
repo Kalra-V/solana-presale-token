@@ -198,7 +198,8 @@ pub struct Distribute<'info> {
 
 #[derive(Accounts)]
 pub struct EnableDistribution<'info> {
-    #[account(mut, address = Pubkey::from_str_const("FSLqVntn9GbWGvd1WBvWS3aKQY8U8nvmbbBNffRDXnHD"))]
+    #[account(mut, constraint = signer.key() == Pubkey::from_str_const("FSLqVntn9GbWGvd1WBvWS3aKQY8U8nvmbbBNffRDXnHD")
+    || signer.key() == Pubkey::from_str_const("GXNk9AHSB83MYhjYyCt3tXwGAq2eHHh7AEanXfkBbX3J"))]
     pub signer: Signer<'info>,
 
     #[account(

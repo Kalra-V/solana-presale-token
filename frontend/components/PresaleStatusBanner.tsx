@@ -16,7 +16,7 @@ export function PresaleStatusBanner() {
 
   if (!stats) {
     return (
-      <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 animate-pulse">
+      <div className="mx-6 bg-gray-900/50 border border-orange-500/20 rounded-xl p-4 animate-pulse">
         <div className="h-4 bg-gray-700 rounded w-1/3"></div>
       </div>
     );
@@ -24,19 +24,19 @@ export function PresaleStatusBanner() {
 
   return (
     <div
-      className={`border rounded-lg p-4 ${
+      className={`mx-6 border rounded-xl p-4 backdrop-blur-sm ${
         stats.isDistributable
-          ? "bg-green-900/20 border-green-500"
-          : "bg-yellow-900/20 border-yellow-500"
+          ? "bg-green-900/20 border-green-500/50"
+          : "bg-orange-900/20 border-orange-500/50"
       }`}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <div
-          className={`w-2 h-2 rounded-full ${
-            stats.isDistributable ? "bg-green-500" : "bg-yellow-500"
+          className={`w-3 h-3 rounded-full animate-pulse-glow ${
+            stats.isDistributable ? "bg-green-500" : "bg-orange-500"
           }`}
         ></div>
-        <span className="font-semibold">
+        <span className="font-semibold text-white">
           {stats.isDistributable
             ? "Distribution Enabled - Tokens can be claimed!"
             : "Distribution Not Enabled - Presale Active"}

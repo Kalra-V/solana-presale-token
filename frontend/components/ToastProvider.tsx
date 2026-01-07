@@ -7,10 +7,16 @@ interface ToastMessage {
   id: string;
   message: string;
   type: "success" | "error" | "info";
+  link?: string;
+  signature?: string;
 }
 
 interface ToastContextType {
-  showToast: (message: string, type: "success" | "error" | "info") => void;
+  showToast: (
+    message: string,
+    type: "success" | "error" | "info",
+    options?: { link?: string; signature?: string }
+  ) => void;
 }
 
 const ToastContext = createContext<ToastContextType>({
@@ -20,9 +26,13 @@ const ToastContext = createContext<ToastContextType>({
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const showToast = (message: string, type: "success" | "error" | "info") => {
+  const showToast = (
+    message: string,
+    type: "success" | "error" | "info",
+    options?: { link?: string; signature?: string }
+  ) => {
     const id = Math.random().toString(36).substring(7);
-    setToasts((prev) => [...prev, { id, message, type }]);
+    setToasts((prev) => [...prev, { id, message, type, link: options?.link, signature: options?.signature }]);
   };
 
   const removeToast = (id: string) => {
@@ -39,6 +49,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             message={toast.message}
             type={toast.type}
             onClose={() => removeToast(toast.id)}
+            link={toast.link}
+            signature={toast.signature}
           />
         ))}
       </div>

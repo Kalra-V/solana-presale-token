@@ -9,8 +9,9 @@ export function WalletButton() {
 
   if (publicKey) {
     return (
-      <div className="flex items-center gap-4">
-        <span className="text-sm text-gray-400">
+      // <div className="flex items-center gap-4">
+      <>
+        <span className="text-sm text-gray-400 mr-5">
           {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
         </span>
         <button
@@ -19,7 +20,8 @@ export function WalletButton() {
         >
           Disconnect
         </button>
-      </div>
+      </>
+      // </div>
     );
   }
 
@@ -27,10 +29,9 @@ export function WalletButton() {
     <button
       onClick={() => setVisible(true)}
       disabled={connecting}
-      className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30"
     >
       {connecting ? "Connecting..." : "Connect Wallet"}
     </button>
   );
 }
-

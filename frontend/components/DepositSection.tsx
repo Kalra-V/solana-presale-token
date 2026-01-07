@@ -52,8 +52,12 @@ export function DepositSection() {
       const result = await deposit.mutateAsync(amountNum);
       console.log(8);
       showToast(
-        `Deposit successful! View on Explorer: ${result.explorerUrl}`,
-        "success"
+        "Deposit successful!",
+        "success",
+        {
+          link: result.explorerUrl,
+          signature: result.signature,
+        }
       );
       setAmount("");
     } catch (error: any) {
@@ -62,8 +66,8 @@ export function DepositSection() {
   };
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-lg p-6">
-      <h2 className="text-xl font-bold mb-4">Deposit SOL</h2>
+    <div className="bg-gradient-to-br from-gray-900 to-black border border-orange-500/20 rounded-xl p-6 backdrop-blur-sm animate-slide-up">
+      <h2 className="text-xl font-bold mb-4 text-white">Deposit SOL</h2>
       <div className="space-y-4">
         <div>
           <label className="block text-sm text-gray-400 mb-2">Amount (SOL)</label>
@@ -74,7 +78,7 @@ export function DepositSection() {
             placeholder="0.0"
             step="0.1"
             min="0"
-            className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+            className="w-full px-4 py-2 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -82,7 +86,7 @@ export function DepositSection() {
             <button
               key={quickAmount}
               onClick={() => setAmount(quickAmount.toString())}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+              className="px-4 py-2 bg-gray-800 hover:bg-orange-500/20 border border-gray-700 hover:border-orange-500/50 rounded-lg transition-all text-gray-300 hover:text-orange-400"
             >
               {quickAmount} SOL
             </button>
@@ -91,7 +95,7 @@ export function DepositSection() {
         <button
           onClick={handleDeposit}
           disabled={!publicKey || deposit.isPending || isInitializing}
-          className="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30"
         >
           {deposit.isPending || isInitializing
             ? "Processing..."

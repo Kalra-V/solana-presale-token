@@ -7,11 +7,12 @@ import type { SolanaPresaleToken } from "../../target/types/solana_presale_token
 import { getConnection, PROGRAM_ID } from "./solana";
 
 export function useProgram() {
-  const { wallet } = useWallet();
+  const { wallet, publicKey } = useWallet();
   const { connection } = useConnection();
 
   return useMemo(() => {
-    if (!wallet?.adapter?.publicKey || !connection) {
+    // Check both publicKey and wallet.adapter to ensure wallet is fully ready
+    if (!publicKey || !wallet?.adapter || !connection) {
       return null;
     }
 
@@ -28,6 +29,6 @@ export function useProgram() {
     );
 
     return { program, provider, connection };
-  }, [wallet, connection]);
+  }, [wallet, publicKey, connection]);
 }
 

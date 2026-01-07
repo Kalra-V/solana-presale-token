@@ -15,12 +15,12 @@ export default function AdminPage() {
 
   if (!publicKey) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 px-6 py-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
           <WalletButton />
         </div>
-        <div className="bg-red-900/20 border border-red-500 rounded-lg p-6">
+        <div className="bg-red-900/20 border border-red-500/50 rounded-xl p-6 backdrop-blur-sm">
           <p className="text-red-400">Please connect your wallet to access the admin dashboard</p>
         </div>
       </div>
@@ -29,12 +29,12 @@ export default function AdminPage() {
 
   if (!isAdmin) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 px-6 py-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
           <WalletButton />
         </div>
-        <div className="bg-red-900/20 border border-red-500 rounded-lg p-6">
+        <div className="bg-red-900/20 border border-red-500/50 rounded-xl p-6 backdrop-blur-sm">
           <p className="text-red-400">
             Unauthorized. Only the admin wallet can access this page.
           </p>
@@ -50,9 +50,9 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-6 py-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
         <WalletButton />
       </div>
 

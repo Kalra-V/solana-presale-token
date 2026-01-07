@@ -1,6 +1,6 @@
 "use client";
 
-import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
@@ -13,7 +13,7 @@ import { ToastProvider } from "../components/ToastProvider";
 import { useMemo } from "react";
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,7 +41,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={spaceGrotesk.className}>
         <ConnectionProvider endpoint={endpoint}>
           <WalletProvider wallets={wallets} autoConnect>
             <WalletModalProvider>
@@ -49,28 +49,28 @@ export default function RootLayout({
                 <SocketProvider>
                   <ToastProvider>
                     <div className="min-h-screen bg-black text-white">
-                    <nav className="border-b border-gray-800 p-4">
+                    <nav className="border-b border-gray-800/50 p-4 backdrop-blur-sm bg-black/50">
                       <div className="container mx-auto flex justify-between items-center">
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                          Token Presale
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
+                          Solana Launchpad
                         </h1>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
                           <a
                             href="/"
-                            className="hover:text-purple-400 transition-colors"
+                            className="hover:text-orange-400 text-gray-300 transition-colors"
                           >
                             Presale
                           </a>
                           <a
                             href="/admin"
-                            className="hover:text-purple-400 transition-colors"
+                            className="hover:text-orange-400 text-gray-300 transition-colors"
                           >
                             Admin
                           </a>
                         </div>
                       </div>
                     </nav>
-                    <main className="container mx-auto p-6">{children}                    </main>
+                    <main className="container mx-auto">{children}</main>
                     </div>
                   </ToastProvider>
                 </SocketProvider>
